@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.gssnet.com/pst2mbox"
+	xmlns:tns="http://www.gssnet.com/pst2mbox" version="1.0.0.0">
+
+	<simpleType name="sourceType">
+		<restriction base="string">
+			<enumeration value="PST"></enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="targetType">
+		<restriction base="string">
+			<enumeration value="MBOX"></enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="languageType">
+		<restriction base="ID">
+			<enumeration value="en"></enumeration>
+			<enumeration value="fr"></enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="settingType">
+		<restriction base="ID">
+			<enumeration value="FilterRegex"></enumeration>
+			<enumeration value="FilterGroup"></enumeration>
+			<enumeration value="PSTFilePassword"></enumeration>
+			<enumeration value="MailHost"></enumeration>
+			<enumeration value="Domain"></enumeration>
+			<enumeration value="InputDir"></enumeration>
+			<enumeration value="OutputDir"></enumeration>
+			<enumeration value="LogDir"></enumeration>
+			<enumeration value="LogSizeWrap"></enumeration>
+			<enumeration value="MultipartBoundary"></enumeration>
+			<enumeration value="SMTPAddressFile"></enumeration>
+			<enumeration value="SMTPPartsSeparator"></enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="dateMaskType">
+		<restriction base="string">
+			<enumeration value="DWK, DD MMM YYYY HH:MI:SS TZHH"></enumeration>
+			<enumeration value="DWK MMM DD HH:MI:SS YYYY"></enumeration>
+			<enumeration value="YYYYMMDDHHMI"></enumeration>
+			<enumeration value="YYYYMMDDHHMISS"></enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="valueModifierType">
+		<restriction base="string">
+			<enumeration value="base64"></enumeration>
+			<enumeration value="smtpLookup"></enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="conditionType">
+		<restriction base="string">
+			<enumeration value="AttachmentExists"></enumeration>
+			<enumeration value="NoAttachments"></enumeration>
+			<enumeration value="TextPart"></enumeration>
+			<enumeration value="AttachmentPart"></enumeration>
+			<enumeration value="EndOfParts"></enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="folderTypes">
+		<union>
+			<!-- For English language -->
+			<simpleType>
+				<restriction base="string">
+					<pattern
+						value="(Inbox)?(,)?(Drafts)?(,)?(Sent)?(,)?(Junk Mail)?(,)?(Trash)?((((,)(Folders(/[ _\-#a-zA-Z0-9]*)))*)|((,)?(PrivateFolders)?(,)?(SharedFolders)?))">
+					</pattern>
+				</restriction>
+			</simpleType>
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="All"></enumeration>
+				</restriction>
+			</simpleType>
+			<!-- For French language -->
+			<simpleType>
+				<restriction base="string">
+					<pattern value="TBD Folders Names"></pattern>
+				</restriction>
+			</simpleType>
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="TBD All"></enumeration>
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+
+	<complexType name="mailboxType">
+		<sequence>
+			<element name="folders" maxOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="conversionRule"
+							type="tns:conversionRuleType" minOccurs="0" maxOccurs="1">
+						</element>
+					</sequence>
+					<attribute name="value" type="string"
+						use="required">
+					</attribute>
+					<attribute name="ignore" type="string"
+						use="optional">
+					</attribute>
+					<attribute name="language" type="IDREF"
+						use="required">
+					</attribute>
+				</complexType>
+			</element>
+			<element name="message" minOccurs="1" maxOccurs="1"
+				type="tns:messageType">
+			</element>
+		</sequence>
+		<attribute name="dateFilterProperty" type="string"
+			use="optional">
+		</attribute>
+		<attribute name="dateFilterAfter" type="string"
+			use="optional">
+		</attribute>
+		<attribute name="dateFilterBefore" type="string"
+			use="optional">
+		</attribute>
+		<attribute name="dateMask" type="tns:dateMaskType"
+			use="optional">
+		</attribute>
+	</complexType>
+
+	<complexType name="conversionRuleType">
+		<sequence>
+			<element name="conversion" maxOccurs="unbounded">
+				<complexType>
+					<attribute name="input" type="string"></attribute>
+					<attribute name="output" type="string"></attribute>
+				</complexType>
+			</element>
+			<element name="default">
+				<complexType>
+					<attribute name="output" type="string"></attribute>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="messageType">
+		<sequence>
+			<element name="messageItem" minOccurs="1"
+				maxOccurs="unbounded">
+				<complexType>
+					<sequence>
+						<element name="pstItemProperty" minOccurs="0"
+							maxOccurs="unbounded">
+							<complexType>
+								<sequence>
+									<element name="conversionRule"
+										type="tns:conversionRuleType" minOccurs="0" maxOccurs="1">
+									</element>
+								</sequence>
+								<attributeGroup
+									ref="tns:pstItemPropertyType">
+								</attributeGroup>
+							</complexType>
+						</element>
+						<element name="configSetting" minOccurs="0"
+							maxOccurs="unbounded">
+							<complexType>
+								<attributeGroup
+									ref="tns:pstItemPropertyType">
+								</attributeGroup>
+							</complexType>
+						</element>
+					</sequence>
+					<attribute name="name" type="string"
+						use="required">
+					</attribute>
+					<attribute name="value" type="string"
+						use="required">
+					</attribute>
+					<attribute name="condition" type="tns:conditionType"
+						use="optional">
+					</attribute>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<attributeGroup name="pstItemPropertyType">
+		<attribute name="name" type="string" use="required"></attribute>
+		<attribute name="placeholder" type="string" use="required"></attribute>
+		<attribute name="multivalue" type="boolean" use="optional"
+			default="false">
+		</attribute>
+		<attribute name="dateMask" type="tns:dateMaskType"
+			use="optional">
+		</attribute>
+		<attribute name="valueModifier" type="tns:valueModifierType"
+			use="optional">
+		</attribute>
+		<attribute name="smtpPartsSeparator" type="string"
+			use="optional">
+		</attribute>
+	</attributeGroup>
+
+	<complexType name="mailMoverType">
+		<sequence>
+			<element name="configEntry" minOccurs="0"
+				maxOccurs="unbounded">
+				<complexType>
+					<attribute name="setting" type="tns:settingType"></attribute>
+					<attribute name="value" type="string"
+						use="required">
+					</attribute>
+				</complexType>
+			</element>
+			<element name="mailbox" minOccurs="1" maxOccurs="1"
+				type="tns:mailboxType">
+			</element>
+		</sequence>
+		<attribute name="source" type="tns:sourceType" use="required"></attribute>
+		<attribute name="target" type="tns:targetType" use="required"></attribute>
+		<attribute name="language" type="tns:languageType"
+			use="required">
+		</attribute>
+	</complexType>
+	<element name="mailMover" type="tns:mailMoverType"></element>
+</schema>

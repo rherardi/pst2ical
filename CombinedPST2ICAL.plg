@@ -1,0 +1,60 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: CombinedPST2ICAL - Win32 Unicode Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "D:\TEMP\RSP9.tmp" with contents
+[
+/nologo /Zp1 /ML /W3 /GX /O2 /I "C:\xerces-c-windows_2000-msvc_60\include" /I "C:\Xalan-C_1_10_0-win32-msvc_60\include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_UNICODE" /D "UNICODE" /D "W32" /D "JESCOMMON_EXPORTS" /D "NCALXML_EXPORTS" /Fp"Unicode Release/CombinedPST2ICAL.pch" /YX /Fo"Unicode Release/" /Fd"Unicode Release/" /FD /c 
+"I:\UAB\Projects\GSS\CombinedPST2ICAL\PST2ICALApp.cpp"
+]
+Creating command line "cl.exe @D:\TEMP\RSP9.tmp" 
+Creating temporary file "D:\TEMP\RSPA.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib mapi32.lib EXCHSDK.LIB version.lib msvcrt.lib C:\xerces-c-windows_2000-msvc_60\lib\xerces-c_2.lib C:\Xalan-C_1_10_0-win32-msvc_60\lib\Xalan-C_1.lib /nologo /subsystem:console /incremental:no /pdb:"Unicode Release/PST2ICAL.pdb" /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcmt" /out:"Unicode Release/PST2ICAL.exe" 
+".\Unicode Release\Calendar.obj"
+".\Unicode Release\CalendarItem.obj"
+".\Unicode Release\CODES.OBJ"
+".\Unicode Release\ConversionRuleEntry.obj"
+".\Unicode Release\DirUtils.obj"
+".\Unicode Release\EntryTransformer.obj"
+".\Unicode Release\Inistuff.obj"
+".\Unicode Release\JESCommon.obj"
+".\Unicode Release\List.obj"
+".\Unicode Release\Mapi.obj"
+".\Unicode Release\MD5C.OBJ"
+".\Unicode Release\ObjectArray.obj"
+".\Unicode Release\OutlineInfo.obj"
+".\Unicode Release\OutlookCondition.obj"
+".\Unicode Release\PST2ICALApp.obj"
+".\Unicode Release\PSTProc.obj"
+".\Unicode Release\Resources.obj"
+".\Unicode Release\SAXErrorHandler.obj"
+".\Unicode Release\StdAfx.obj"
+".\Unicode Release\XGetopt.obj"
+".\Unicode Release\XMALLOC.OBJ"
+".\Unicode Release\XMLCalProc.obj"
+".\Unicode Release\XMLNameValue.obj"
+".\Unicode Release\XMLProc.obj"
+".\Unicode Release\resource.res"
+]
+Creating command line "link.exe @D:\TEMP\RSPA.tmp"
+<h3>Output Window</h3>
+Compiling...
+PST2ICALApp.cpp
+Linking...
+   Creating library Unicode Release/PST2ICAL.lib and object Unicode Release/PST2ICAL.exp
+LINK : warning LNK4049: locally defined symbol ""public: virtual __thiscall CObjectArray::~CObjectArray(void)" (??1CObjectArray@@UAE@XZ)" imported
+LINK : warning LNK4049: locally defined symbol ""public: __thiscall CObjectArray::CObjectArray(void)" (??0CObjectArray@@QAE@XZ)" imported
+LINK : warning LNK4089: all references to "ADVAPI32.dll" discarded by /OPT:REF
+
+
+
+<h3>Results</h3>
+PST2ICAL.exe - 0 error(s), 3 warning(s)
+</pre>
+</body>
+</html>

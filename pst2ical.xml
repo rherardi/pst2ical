@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:calendarConverter source="PST" target="ICAL" language="en"
+	xmlns:tns="http://www.gssnet.com/pst2ical"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.gssnet.com/pst2ical pst2ical.xsd ">
+
+	<!-- Global configuration settings -->
+	<configEntry setting="PSTFilePassword" value="" />
+	<configEntry setting="InputDir" value="" />
+	<configEntry setting="OutputDir" value="c:/converted" />
+	<configEntry setting="LogDir" value="" />
+
+	<configEntry setting="SMTPAddressFile" value="pst2ical.adr" />
+	<configEntry setting="SMTPPartsSeparator" value="&lt;==&gt;" />
+
+	<!-- Calendar formatting/conversion rules -->
+	<calendar dateFilterProperty="PR_CLIENT_SUBMIT_TIME" dateFilterAfter="20080601000000" dateFilterBefore="20100303000000" dateMask="YYYYMMDDHHMISS">
+		<calendarItem name="" value="BEGIN:VCALENDAR" condition="CalendarHeader" />
+		<calendarItem name="PRODID" value="-//Microsoft Corporation//Outlook 11.0 MIMEDIR//EN" condition="CalendarHeader" />
+		<calendarItem name="METHOD" value="PUBLISH" condition="CalendarHeader" />
+		<calendarItem name="VERSION" value="2.0" condition="CalendarHeader" />
+		<calendarItem name="BEGIN" value="VTIMEZONE" />
+		<calendarItem name="TZID" value="{TZID}">
+			<pstItemProperty name="0x825E" placeholder="{TZID}" valueModifier="timezoneName" namedProperty="true">
+				<conversionRule>
+					<!-- http://speleotrove.com/pmglobe/pmtimez.html -->
+					<conversion input="FLE Standard Time" output="Europe/Vilnius"/>
+					<conversion input="Pacific Standard Time" output="America/San Francisco"/>
+					<conversion input="Central Standard Time" output="America/Chicago"/>
+					<conversion input="Eastern Standard Time" output="America/New York"/>
+					<default output=""/>
+				</conversionRule>
+			</pstItemProperty>
+			<!--
+			<lotusDocField name="StartTimeZone" placeholder="{TZID}" valueModifier="timezoneName">
+				<conversionRule>
+					<conversion input="Central" output="America/Chicago"/>
+					<conversion input="Eastern" output="America/New York"/>
+					<conversion input="Egypt" output="Africa/Cairo"/>
+					<conversion input="Eire" output="Europe/Dublin"/>
+					<conversion input="GMT" output="Europe/London"/>
+					<conversion input="Iceland" output="Atlantic/Reykjavik"/>
+					<conversion input="Japan" output="Asia/Tokyo"/>
+					<conversion input="Libya" output="Africa/Tripoli"/>
+					<conversion input="Mountain" output="America/Denver"/>
+					<conversion input="Pacific" output="America/Los Angeles"/>
+					<conversion input="Portugal" output="Europe/Lisbon"/>
+					<conversion input="Turkey" output="Europe/Istanbul"/>
+					<default output=""/>
+				</conversionRule>
+			</lotusDocField>
+			-->
+		</calendarItem>
+		<calendarItem name="BEGIN" value="STANDARD" />
+		<calendarItem name="DTSTART" value="19501105T020000" />
+		<calendarItem name="TZOFFSETFROM" value="-0800" />
+		<calendarItem name="TZOFFSETTO" value="-0800" />
+		<calendarItem name="RRULE" value="FREQ=YEARLY;BYMINUTE=0;BYHOUR=2;BYDAY=-1SU;BYMONTH=10" />
+		<calendarItem name="END" value="STANDARD" />
+		<calendarItem name="BEGIN" value="DAYLIGHT" />
+		<calendarItem name="DTSTART" value="19500326T020000" />
+		<calendarItem name="TZOFFSETFROM" value="-0800" />
+		<calendarItem name="TZOFFSETTO" value="-0800" />
+		<calendarItem name="RRULE" value="FREQ=YEARLY;BYMINUTE=0;BYHOUR=2;BYDAY=-1SU;BYMONTH=10" />
+		<calendarItem name="END" value="DAYLIGHT" />
+		<calendarItem name="END" value="VTIMEZONE" />
+		<calendarItem name="" value="BEGIN:VEVENT"/>
+		<calendarItem name="TRANSP" value="OPAQUE"/>
+		<calendarItem name="RRULE" value="FREQ={Frequency};INTERVAL={Interval};COUNT={Count}{BYDAYPrefix}{BYDAYValue}{BYMONTHDAYPrefix}{BYMONTHDAYValue}{BYDAYMONTHPrefix}{BYDAYMONTHValue}{BYMONTHPrefix}{BYMONTHValue}" conditionLotusDocField="Repeats" conditionLotusDocFieldValue="1">
+			<!--
+			<lotusDocField name="RepeatForUnit" placeholder="{Frequency}" >
+				<conversionRule>
+					<conversion input="D" output="DAILY"/>
+					<conversion input="W" output="WEEKLY"/>
+					<conversion input="M" output="MONTHLY"/>
+					<conversion input="Y" output="YEARLY"/>
+					<default output=""/>
+				</conversionRule>
+			</lotusDocField>
+			<lotusDocField name="RepeatInterval" placeholder="{Interval}" >
+			</lotusDocField>
+			<lotusDocField name="RepeatFor" placeholder="{Count}" >
+			</lotusDocField>
+			<lotusDocField name="RepeatAdjust" placeholder="{BYDAYPrefix}" conditionLotusDocField="RepeatForUnit" conditionLotusDocFieldValue="W">
+				<conversionRule>
+					<default output=";BYDAY=" fieldPresent="true" />
+				</conversionRule>
+			</lotusDocField>
+			<lotusDocField name="RepeatAdjust" placeholder="{BYDAYValue}" multivalue="true" onlyFirstValue="false" conditionLotusDocField="RepeatForUnit" conditionLotusDocFieldValue="W">
+				<conversionRule>
+					<conversion input="0" output="SU"/>
+					<conversion input="1" output="MO"/>
+					<conversion input="2" output="TU"/>
+					<conversion input="3" output="WE"/>
+					<conversion input="4" output="TH"/>
+					<conversion input="5" output="FR"/>
+					<conversion input="6" output="SA"/>
+					<default output="" fieldPresent="true" />
+				</conversionRule>
+			</lotusDocField>
+			<lotusDocField name="RepeatAdjust" placeholder="{BYMONTHDAYPrefix}" conditionLotusDocField="RepeatForUnit" conditionLotusDocFieldValue="M" dotPresentInValue="no">
+				<conversionRule>
+					<default output=";BYMONTHDAY=" fieldPresent="true" />
+				</conversionRule>
+			</lotusDocField>
+			<lotusDocField name="RepeatAdjust" placeholder="{BYMONTHDAYValue}" multivalue="true" onlyFirstValue="false" conditionLotusDocField="RepeatForUnit" conditionLotusDocFieldValue="M" dotPresentInValue="no">
+			</lotusDocField>
+			<lotusDocField name="RepeatAdjust" placeholder="{BYDAYMONTHPrefix}" conditionLotusDocField="RepeatForUnit" conditionLotusDocFieldValue="M" dotPresentInValue="yes">
+				<conversionRule>
+					<default output=";BYDAY=" fieldPresent="true" />
+				</conversionRule>
+			</lotusDocField>
+			<lotusDocField name="RepeatAdjust" placeholder="{BYDAYMONTHValue}" multivalue="true" onlyFirstValue="false" conditionLotusDocField="RepeatForUnit" conditionLotusDocFieldValue="M" dotPresentInValue="yes">
+				<conversionRule>
+					<conversion input="0" output="SU"/>
+					<conversion input="1" output="MO"/>
+					<conversion input="2" output="TU"/>
+					<conversion input="3" output="WE"/>
+					<conversion input="4" output="TH"/>
+					<conversion input="5" output="FR"/>
+					<conversion input="6" output="SA"/>
+					<default output="" fieldPresent="true" />
+				</conversionRule>
+			</lotusDocField>
+			<lotusDocField name="RepeatAdjust" placeholder="{BYMONTHPrefix}" conditionLotusDocField="RepeatForUnit" conditionLotusDocFieldValue="Y" dotPresentInValue="no">
+				<conversionRule>
+					<default output=";BYMONTH=" fieldPresent="true" />
+				</conversionRule>
+			</lotusDocField>
+			<lotusDocField name="RepeatAdjust" placeholder="{BYMONTHValue}" multivalue="true" onlyFirstValue="false" conditionLotusDocField="RepeatForUnit" conditionLotusDocFieldValue="Y" dotPresentInValue="no">
+			</lotusDocField>
+			-->
+		</calendarItem>
+
+		<calendarItem name="CATEGORIES" value="{Categories}">
+			<pstItemProperty name="Keywords" placeholder="{Categories}" namedProperty="true">
+			</pstItemProperty>
+			<!--
+			<lotusDocField name="Categories" placeholder="{Categories}" >
+				<conversionRule>
+					<conversion input="H" output="Holiday"/>
+					<conversion input="V" output="Vacation"/>
+					<conversion input="P" output="Projects"/>
+					<conversion input="C" output="Clients"/>
+					<conversion input="PC" output="Phone Calls"/>
+					<conversion input="T" output="Travel"/>
+					<default output=""/>
+				</conversionRule>
+			</lotusDocField>
+			-->
+		</calendarItem>
+
+		<calendarItem name="UID" value="{ApptUNID}">
+			<pstItemProperty name="0x0023" placeholder="{ApptUNID}" valueModifier="16bytes" namedProperty="true">
+			</pstItemProperty>
+			<!--
+			<lotusDocField name="ApptUNID" placeholder="{ApptUNID}" >
+			</lotusDocField>
+			-->
+		</calendarItem>
+
+		<calendarItem name="DTSTAMP" value="{Created}">
+			<pstItemProperty name="PR_CREATION_TIME" placeholder="{Created}" dateMask="YYYYMMDDTHHMISSZ">
+			</pstItemProperty>
+			<!--
+			<lotusDocField name="Created" placeholder="{Created}" dateMask="YYYYMMDDTHHMISSZ" >
+			</lotusDocField>
+			-->
+		</calendarItem>
+
+		<calendarItem name="SUMMARY" value="{Summary}">
+			<pstItemProperty name="PR_SUBJECT" placeholder="{Summary}">
+			</pstItemProperty>
+			<!--
+			<lotusDocField name="Subject" placeholder="{Summary}" >
+			</lotusDocField>
+			-->
+		</calendarItem>
+
+		<calendarItem name="" value="DTSTART:{Dtstart}">
+			<pstItemProperty name="0x8516" placeholder="{Dtstart}" namedProperty="true">
+			</pstItemProperty>
+			<!--
+			<lotusDocField name="StartDateTime" placeholder="{Dtstart}" dateMask="YYYYMMDDTHHMISSZ" >
+			</lotusDocField>
+			-->
+		</calendarItem>
+
+		<calendarItem name="" value="DTEND:{Dtend}">
+			<pstItemProperty name="0x8517" placeholder="{Dtend}" namedProperty="true">
+			</pstItemProperty>
+			<!--
+			<lotusDocField name="EndDateTime" placeholder="{Dtend}" dateMask="YYYYMMDDTHHMISSZ" >
+			</lotusDocField>
+			-->
+		</calendarItem>
+
+		<calendarItem name="LOCATION" value="{Location}">
+			<pstItemProperty name="0x8208" placeholder="{Location}" namedProperty="true">
+			</pstItemProperty>
+			<!--
+			<lotusDocField name="Location" placeholder="{Location}" >
+			</lotusDocField>
+			-->
+		</calendarItem>
+
+		<calendarItem name="DESCRIPTION" value="{Description}">
+			<pstItemProperty name="PR_BODY" placeholder="{Description}">
+			</pstItemProperty>
+			<!--
+			<lotusDocField name="Body" placeholder="{Description}" >
+			</lotusDocField>
+			-->
+		</calendarItem>
+
+		<calendarItem name="" value="ATTACH;ENCODING=BASE64;VALUE=BINARY;X-FILENAME={Filename}:" condition="AttachmentPart">
+			<pstItemProperty name="PR_MESSAGE_ATTACHMENTS" placeholder="{Filename}">
+			</pstItemProperty>
+			<!--
+			<lotusDocField name="$FILE_NAME" placeholder="{Filename}" >
+			</lotusDocField>
+			-->
+		</calendarItem>
+
+		<calendarItem name="SEQUENCE" value="0" />
+
+		<calendarItem name="PRIORITY" value="{Priority}">
+			<pstItemProperty name="PR_IMPORTANCE" placeholder="{Priority}">
+			</pstItemProperty>
+			<!--
+			<lotusDocField name="$BusyPriority" placeholder="{Priority}" >
+			</lotusDocField>
+			-->
+		</calendarItem>
+
+		<calendarItem name="CREATED" value="{Created}">
+			<pstItemProperty name="PR_CREATION_TIME" placeholder="{Created}" dateMask="YYYYMMDDTHHMISSZ">
+			</pstItemProperty>
+			<!--
+			<lotusDocField name="Created" placeholder="{Created}" dateMask="YYYYMMDDTHHMISSZ" >
+			</lotusDocField>
+			-->
+		</calendarItem>
+
+		<calendarItem name="LAST-MODIFIED" value="{LastModified}">
+			<pstItemProperty name="PR_LAST_MODIFICATION_TIME" placeholder="{LastModified}" dateMask="YYYYMMDDTHHMISSZ">
+			</pstItemProperty>
+			<!--
+			<lotusDocField name="LastModified" placeholder="{LastModified}" dateMask="YYYYMMDDTHHMISSZ" >
+			</lotusDocField>
+			-->
+		</calendarItem>
+
+		<calendarItem name="CLASS" value="PUBLIC"/>
+
+		<!-- Meeting specific -->
+
+		<!-- JES specific -->
+
+
+<!--
+
+		<calendarItem name="" value="ORGANIZER;CN=&quot;{Organizer}&quot;" condition="Meeting">
+			<lotusDocField name="Chair" placeholder="{Organizer}" extractCN="true">
+			</lotusDocField>
+		</calendarItem>
+
+		<calendarItem name="" value=" ;X-NSCP-ORGANIZER-UID={Organizer}" condition="Meeting">
+			<lotusDocField name="Chair" placeholder="{Organizer}" valueModifier="smtpLookup" smtpPartsSeparator="&lt;==&gt;">
+			</lotusDocField>
+		</calendarItem>
+
+		<calendarItem name="" value=" ;X-S1CS-EMAIL={Organizer}" condition="Meeting">
+			<lotusDocField name="Chair" placeholder="{Organizer}" valueModifier="smtpLookup">
+			</lotusDocField>
+		</calendarItem>
+
+		<calendarItem name="" value=" :{Organizer}" condition="Meeting">
+			<lotusDocField name="Chair" placeholder="{Organizer}" valueModifier="smtpLookup">
+			</lotusDocField>
+		</calendarItem>
+
+-->
+
+		<!-- MS Outlook specific -->
+
+<!--
+
+		<calendarItem name="" value="ORGANIZER;CN=&quot;{Organizer}&quot;" condition="Meeting">
+			<lotusDocField name="Chair" placeholder="{Organizer}" valueModifier="smtpLookup">
+			</lotusDocField>
+		</calendarItem>
+
+-->
+
+		<calendarItem name="" value="ORGANIZER;CN=&quot;{Organizer}&quot;;RSVP=TRUE:MAILTO:{Organizer}" condition="Meeting">
+			<pstItemProperty name="PR_DISPLAY_TO" placeholder="{Organizer}" valueModifier="smtpLookup" smtpLookupRequired="true">
+			</pstItemProperty>
+			<!--
+			<lotusDocField name="Chair" placeholder="{Organizer}" valueModifier="smtpLookup" smtpLookupRequired="true">
+			</lotusDocField>
+			-->
+		</calendarItem>
+
+<!--
+
+		<calendarItem name="" value="ATTENDEE;CN=&quot;{Attendee}&quot;;ROLE=REQ-PARTICIPANT;RSVP=TRUE:MAILTO:{Attendee}" condition="Meeting">
+			<lotusDocField name="RequiredAttendees" placeholder="{Attendee}" valueModifier="smtpLookup">
+			</lotusDocField>
+		</calendarItem>
+-->
+
+		<calendarItem name="" value="ATTENDEE;CN=&quot;{Attendee}&quot;;ROLE=REQ-PARTICIPANT;RSVP=TRUE:MAILTO:{Attendee}" condition="MeetingAttendee" conditionLotusDocField="RequiredAttendees">
+			<pstItemProperty name="0x853A" placeholder="{Attendee}" namedProperty="true" valueModifier="smtpLookup">
+			</pstItemProperty>
+			<!--
+			<lotusDocField name="RequiredAttendees" placeholder="{Attendee}" valueModifier="smtpLookup">
+			</lotusDocField>
+			-->
+		</calendarItem>
+
+		<calendarItem name="" value="END:VEVENT" condition="EventFooter" />
+
+		<calendarItem name="" value="END:VCALENDAR" condition="CalendarFooter" />
+
+	</calendar>
+
+	<!-- SMTP.ADR file address conversion rule -->
+	<smtpAddrEntry lotusPart="{CN}" emailSeparator="."
+		emailPart="(F)irstName, LastName" 
+		emailPreference="{email}"
+		partsSeparator="&lt;==&gt;" file="I:/temp/ncal2ical/smtp.adr">
+		<lotusDocField name="FullName" placeholder="{CN}" multivalue="true" />
+		<lotusDocField name="InternetAddress" placeholder="{email}" />
+	</smtpAddrEntry>
+</tns:calendarConverter>

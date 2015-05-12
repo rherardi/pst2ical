@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:mailMover source="PST" target="MBOX" language="en"
+	xmlns:tns="http://www.gssnet.com/pst2mbox"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.gssnet.com/pst2mbox pst2mbox.xsd ">
+
+	<!-- Global configuration settings -->
+	<configEntry setting="PSTFilePassword" value="" />
+	<configEntry setting="MailHost" value="hb_sun.ccb.com" />
+	<configEntry setting="Domain" value="" />
+	<configEntry setting="InputDir" value="" />
+	<configEntry setting="OutputDir" value="i:/gssdata" />
+	<configEntry setting="LogDir" value="" />
+	<configEntry setting="MultipartBoundary" value="--2D2D0434E82416B8517CE591" />
+
+	<configEntry setting="SMTPAddressFile" value="pst2mbox.adr" />
+	<configEntry setting="SMTPPartsSeparator" value="&lt;==&gt;" />
+
+	<!-- Mailbox processing rules -->
+	<mailbox dateFilterProperty="PR_CLIENT_SUBMIT_TIME" dateFilterAfter="20051101000000" dateMask="YYYYMMDDHHMISS">
+		<folders value="All" language="en" ignore="Deleted Items">
+			<conversionRule>
+				<!-- For folder name conversion demo purposes only -->
+				<conversion input="Drafts" output="My Drafts"/>
+				<default output="unknown"/>
+			</conversionRule>
+		</folders>
+
+		<!-- Message formatting/conversion rules -->
+		<message>
+			<!-- This initial From is needed for compatibility with /var/mail file format -->
+			<messageItem name="" value="From {From}  {Date}" >
+				<pstItemProperty name="PR_SENDER_NAME" placeholder="{From}" valueModifier="smtpLookup"/>
+				<pstItemProperty name="PR_CLIENT_SUBMIT_TIME" placeholder="{Date}" dateMask="DWK MMM DD HH:MI:SS YYYY"/>
+				<!--
+				<lotusDocField name="From" placeholder="{From}" valueModifier="smtpLookup"/>
+				<lotusDocField name="PostedDate" placeholder="{Date}" dateMask="DWK MMM DD HH:MI:SS YYYY"/>
+				-->
+			</messageItem>
+			<messageItem name="Date" value="{Date}" >
+				<pstItemProperty name="PR_CLIENT_SUBMIT_TIME" placeholder="{Date}" dateMask="DWK MMM DD HH:MI:SS YYYY"/>
+				<!--
+				<lotusDocField name="PostedDate" placeholder="{Date}" dateMask="DWK, DD MMM YYYY HH:MI:SS TZHH"/>
+				-->
+			</messageItem>
+			<messageItem name="From" value="{From}" >
+				<pstItemProperty name="PR_SENDER_NAME" placeholder="{From}"/>
+				<!--
+				<lotusDocField name="From" placeholder="{From}" />
+				-->
+			</messageItem>
+			<messageItem name="Message-Id" value="{MessageId}" >
+				<pstItemProperty name="PR_INTERNET_MESSAGE_ID" placeholder="{MessageId}"/>
+				<!--
+				<lotusDocField name="$MessageId" placeholder="{MessageId}"/>
+				-->
+			</messageItem>
+			<messageItem name="To" value="{To}" >
+				<pstItemProperty name="PR_DISPLAY_NAME" placeholder="{To}"/>
+				<!--
+				<lotusDocField name="SendTo" placeholder="{To}" />
+				-->
+			</messageItem>
+			<messageItem name="Cc" value="{Cc}" >
+				<pstItemProperty name="PR_DISPLAY_NAME" placeholder="{Cc}"/>
+				<!--
+				<lotusDocField name="CopyTo" placeholder="{Cc}" />
+				-->
+			</messageItem>
+			<messageItem name="Subject" value="=?utf-8?B?{Subject}?=" >
+				<pstItemProperty name="PR_SUBJECT" placeholder="{Subject}" valueModifier="base64" />
+				<!--
+				<lotusDocField name="Subject" placeholder="{Subject}" valueModifier="base64" />
+				-->
+			</messageItem>
+			<messageItem name="X-Accept-Language" value="en" />
+			<messageItem name="MIME-Version" value="1.0" />
+			<messageItem name="Content-Language" value="en" />
+
+			<messageItem name="Content-Type" value="multipart/mixed; boundary=&quot;{Boundary}&quot;" condition="AttachmentExists">
+				<configSetting name="MultipartBoundary" placeholder="{Boundary}" />
+			</messageItem>
+			<messageItem name="Content-Type" value="text/plain; charset=utf-8" condition="NoAttachments" />
+			<messageItem name="Content-Disposition" value="inline" condition="NoAttachments" />
+			<messageItem name="Content-Transfer-Encoding" value="quoted-printable" condition="NoAttachments" />
+
+			<messageItem name="X-Mailer" value="{Mailer}" >
+				<!--
+				<lotusDocField name="$Mailer" placeholder="{Mailer}" />
+				-->
+			</messageItem>
+			<messageItem name="X-Priority" value="{Priority}" >
+				<pstItemProperty name="PR_IMPORTANCE" placeholder="{Priority}" />
+				<!--
+				<lotusDocField name="DeliveryPriority" placeholder="{Priority}" >
+					<conversionRule>
+						<conversion input="L" output="Low"/>
+						<conversion input="H" output="High"/>
+						<default output="Normal"/>
+					</conversionRule>
+				</lotusDocField>
+				-->
+			</messageItem>
+			<messageItem name="" value="&#x0D;&#x0A;" />
+			<messageItem name="" value="This is a multi-part message in MIME format." condition="AttachmentExists" />
+			<messageItem name="" value="&#x0D;&#x0A;" condition="AttachmentExists" />
+
+			<!-- Text Part -->
+			<messageItem name="" value="--{Boundary}" condition="TextPart" >
+				<configSetting name="MultipartBoundary" placeholder="{Boundary}" />
+			</messageItem>
+			<messageItem name="Content-Type" value="text/plain; charset=utf-8" condition="TextPart" />
+			<messageItem name="Content-Disposition" value="inline" condition="TextPart"/>
+			<messageItem name="Content-Transfer-Encoding" value="quoted-printable" condition="TextPart"/>
+			<messageItem name="" value="&#x0D;&#x0A;" condition="TextPart" />
+
+			<!-- Attachment Part -->
+			<messageItem name="" value="&#x0D;&#x0A;" condition="AttachmentPart" />
+			<messageItem name="" value="--{Boundary}" condition="AttachmentPart" >
+				<configSetting name="MultipartBoundary" placeholder="{Boundary}" />
+			</messageItem>
+			<messageItem name="Content-Type" value="{DependsOnExtension}" condition="AttachmentPart">
+				<!--
+				<lotusDocField name="$FILE_EXT" placeholder="{DependsOnExtension}" >
+					<conversionRule>
+						<conversion input="bat" output="text/plain"/>
+						<conversion input="ini" output="text/plain"/>
+						<conversion input="png" output="image/png"/>
+						<default output="unknown"/>
+					</conversionRule>
+				</lotusDocField>
+				-->
+			</messageItem>
+			<messageItem name="Content-Disposition" value="attachment; filename={Filename}" condition="AttachmentPart">
+				<pstItemProperty name="PR_ATTACH_FILENAME" placeholder="{Filename}" />
+				<!--
+				<lotusDocField name="$FILE_NAME" placeholder="{Filename}"/>
+				-->
+			</messageItem>
+			<messageItem name="Content-Transfer-Encoding" value="base64" condition="AttachmentPart"/>
+			<messageItem name="" value="&#x0D;&#x0A;" condition="AttachmentPart"/>
+
+			<!-- End of Multiple Parts -->
+			<messageItem name="" value="&#x0D;&#x0A;" condition="EndOfParts"/>
+			<messageItem name="" value="--{Boundary}--" condition="EndOfParts" >
+				<configSetting name="MultipartBoundary" placeholder="{Boundary}" />
+			</messageItem>
+		</message>
+	</mailbox>
+</tns:mailMover>
